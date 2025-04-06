@@ -64,7 +64,7 @@ async def sample(req: Request) -> JSONResponse:
 
 
 @app.route(route="chat", auth_level=func.AuthLevel.FUNCTION)
-async def http_trigger(req: Request) -> JSONResponse:
+async def chat(req: Request) -> JSONResponse:
 
     try:
         payload = await req.json()
