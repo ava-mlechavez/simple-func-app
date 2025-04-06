@@ -1,0 +1,15 @@
+
+.git*
+.vscode
+__azurite_db*__.json
+__blobstorage__
+__queuestorage__
+__pycache__/
+local.settings.json
+.venv
+*.http
+*.jpg
+*.png
+*.gif
+tests/
+*.test
