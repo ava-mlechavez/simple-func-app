@@ -73,6 +73,4 @@ jobs:
         with:
           app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
           package: ${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}
-          scm-do-build-during-deployment: ""
-          enable-oryx-build: ""
           respect-funcignore: true
