@@ -63,7 +63,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: "build-artifact"
-          path: "./app.zip"
+          path: "."
 
       - name: Azure Login
         uses: azure/login@v2
@@ -92,7 +92,7 @@ jobs:
         id: deploy-to-function-app
         with:
           app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
-          package: ${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}
+          package: ${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}/drop
           respect-funcignore: true
           scm-do-build-during-deployment: ""
           enable-oryx-build: ""
