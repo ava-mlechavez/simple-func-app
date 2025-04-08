@@ -92,7 +92,7 @@ jobs:
         id: deploy-to-function-app
         with:
           app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
-          package: ${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}/drop
+          package: ${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}
           respect-funcignore: true
           scm-do-build-during-deployment: ""
           enable-oryx-build: ""
