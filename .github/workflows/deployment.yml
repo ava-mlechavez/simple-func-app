@@ -53,12 +53,12 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Set SCM and Run from package
-        uses: azure/appservice-settings@v1
-        with:
-          app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
-          mask-inputs: false
-          app-settings-json: '[{ "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": true, "slotSetting": false}, {"name": "ENABLE_ORYX_BUILD", "value": true, "slotSetting": false }, { "name": "PYTHON_ENABLE_INIT_INDEXING", "value": 1, "slotSetting": false }]'
+      # - name: Set SCM and Run from package
+      #   uses: azure/appservice-settings@v1
+      #   with:
+      #     app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
+      #     mask-inputs: false
+      #     app-settings-json: '[{ "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": true, "slotSetting": false}, {"name": "ENABLE_ORYX_BUILD", "value": true, "slotSetting": false }, { "name": "PYTHON_ENABLE_INIT_INDEXING", "value": 1, "slotSetting": false }]'
 
       # - name: Resolve Project Dependencies Using Pip
       #   shell: bash
@@ -74,5 +74,5 @@ jobs:
           app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
           package: ${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}
           respect-funcignore: true
-          # scm-do-build-during-deployment: true
-          # enable-oryx-build: true
+          scm-do-build-during-deployment: true
+          enable-oryx-build: true
