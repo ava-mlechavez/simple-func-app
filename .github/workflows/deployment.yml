@@ -93,25 +93,60 @@ jobs:
   #     scm-do-build-during-deployment: ""
   #     enable-oryx-build: ""
 
-  test:
+  # test:
+  #   runs-on: ubuntu-latest
+  #   environment: development
+  #   steps:
+  #     - name: "Checkout GitHub Action"
+  #       uses: actions/checkout@v3
+
+  #     - name: Setup Python ${{ vars.PYTHON_VERSION }} Environment
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: ${{ vars.PYTHON_VERSION }}
+
+  #     - name: "Resolve Project Dependencies Using Pip"
+  #       shell: bash
+  #       run: |
+  #         pushd './${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}'
+  #         python -m pip install --upgrade pip
+  #         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+  #         popd
+
+  #     - name: Azure Login
+  #       uses: azure/login@v2
+  #       with:
+  #         client-id: ${{ vars.AZURE_CLIENT_ID }}
+  #         tenant-id: ${{ vars.AZURE_TENANT_ID }}
+  #         subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+  #     - name: Enable Run-From-Package
+  #       uses: azure/appservice-settings@v1
+  #       with:
+  #         app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
+  #         app-settings-json: '[{ "name": "WEBSITE_RUN_FROM_PACKAGE", "value": "1", "slotSetting": false }]'
+
+  #     - name: "Run Azure Functions Action"
+  #       uses: Azure/functions-action@v1
+  #       id: fa
+  #       with:
+  #         app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
+  #         package: ${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}
+  #         scm-do-build-during-deployment: true
+  #         enable-oryx-build: true
+  #         respect-funcignore: true
+
+  test-two:
     runs-on: ubuntu-latest
     environment: development
     steps:
-      - name: "Checkout GitHub Action"
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Python ${{ vars.PYTHON_VERSION }} Environment
-        uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
-
-      - name: "Resolve Project Dependencies Using Pip"
-        shell: bash
-        run: |
-          pushd './${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}'
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
-          popd
 
       - name: Azure Login
         uses: azure/login@v2
@@ -120,17 +155,16 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Enable Run-From-Package
+      - name: Set SCM and Run from package
         uses: azure/appservice-settings@v1
         with:
           app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
-          app-settings-json: '[{ "name": "WEBSITE_RUN_FROM_PACKAGE", "value": "1", "slotSetting": false }]'
+          mask-inputs: false
+          app-settings-json: '[{ "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": true, "slotSetting": false}, {"name": "ENABLE_ORYX_BUILD", "value": true, "slotSetting": false }, { "name": "PYTHON_ENABLE_INIT_INDEXING", "value": 1, "slotSetting": false }]'
 
-      - name: "Run Azure Functions Action"
+      - name: Deploy Function App
         uses: Azure/functions-action@v1
-        id: fa
         with:
           app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
           package: ${{ vars.AZURE_FUNCTIONAPP_PROJECT_PATH }}
-          scm-do-build-during-deployment: true
-          enable-oryx-build: true
+          respect-funcignore: true
