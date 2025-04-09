@@ -77,6 +77,13 @@ jobs:
       #     mask-inputs: false
       #     app-settings-json: '[{ "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": true, "slotSetting": false}, {"name": "ENABLE_ORYX_BUILD", "value": true, "slotSetting": false }, { "name": "PYTHON_ENABLE_INIT_INDEXING", "value": 1, "slotSetting": false }]'
 
+      - name: Enable Run-From-Package
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
+          app-settings-json: '[{ "name": "WEBSITE_RUN_FROM_PACKAGE", "value": "1", "slotSetting": false }]'
+
+
       - name: Deploy Function App
         uses: Azure/functions-action@v1
         id: deploy-to-function-app
