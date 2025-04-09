@@ -35,12 +35,10 @@ jobs:
       - name: Resolve Project Dependencies Using Pip
         shell: bash
         run: |
-          pwd
           pushd './${{ vars.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           python -m pip install --upgrade pip
           pip install -r requirements.txt --target=".python_packages/lib/site-packages"
           popd
-          pwd
 
       - name: Package Dependencies and Application
         run: |
