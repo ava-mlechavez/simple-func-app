@@ -13,7 +13,6 @@ permissions:
 env:
   ACR_NAME: avamlechavez
   IMAGE_NAME: simple_func_app
-  RESOURCE_GROUP: poc-rg
 
 jobs:
   build-and-deploy:
@@ -53,5 +52,5 @@ jobs:
         run: |
           az functionapp config container set \
             --name ${{ vars.AZURE_FUNCTION_APP_NAME }} \
-            --resource-group ${{ RESOURCE_GROUP }} \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
             --image ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
