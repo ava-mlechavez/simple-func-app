@@ -2,6 +2,7 @@ import os
 import azure.functions as func
 import logging
 from azurefunctions.extensions.http.fastapi import Request, JSONResponse
+
 # from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 # from semantic_kernel.connectors.ai.open_ai.prompt_execution_settings.azure_chat_prompt_execution_settings import (
 #     AzureChatPromptExecutionSettings,
@@ -14,7 +15,7 @@ from azurefunctions.extensions.http.fastapi import Request, JSONResponse
 # from semantic_kernel.contents import AuthorRole, ChatHistory, ChatMessageContent
 
 
-# app = func.FunctionApp()
+app = func.FunctionApp()
 
 
 # def get_azure_credential() -> ManagedIdentityCredential | AzureCliCredential:
