@@ -1,4 +1,3 @@
-import os
 import azure.functions as func
 import logging
 from azurefunctions.extensions.http.fastapi import Request, JSONResponse
