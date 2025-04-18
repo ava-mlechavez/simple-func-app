@@ -14,7 +14,7 @@ env:
   ACR_NAME: avamlechavez
   IMAGE_NAME: simple_func_app
   RESOURCE_GROUP: poc-rg
-  FUNC
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
