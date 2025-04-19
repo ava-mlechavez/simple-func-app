@@ -46,16 +46,17 @@ jobs:
           az acr login --name ${{ env.ACR_NAME }}
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
-      - name: 'Run Azure Functions Container Action'
-        uses: Azure/functions-container-action@v1
-        id: fa
-        with:
-          app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
-          image: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+      # - name: 'Run Azure Functions Container Action'
+      #   uses: Azure/functions-container-action@v1
+      #   id: fa
+      #   with:
+      #     app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
+      #     image: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
-      # - name: Configure Azure Function to Use Container
-      #   run: |
-      #     az functionapp config container set \
-      #       --name ${{ vars.AZURE_FUNCTION_APP_NAME }} \
-      #       --resource-group ${{ vars.RESOURCE_GROUP }} \
-      #       --image ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+      - name: Configure Azure Function to Use Container
+        run: |
+          az acr login --name ${{ env.ACR_NAME }}
+          az functionapp config container set \
+            --name ${{ vars.AZURE_FUNCTION_APP_NAME }} \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --image ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
