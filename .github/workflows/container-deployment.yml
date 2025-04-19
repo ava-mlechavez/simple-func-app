@@ -53,7 +53,7 @@ jobs:
         with:
           app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
           mask-inputs: false
-          app-settings-json: '[{ "name": "PYTHON_ENABLE_INIT_INDEXING", "value": 1, "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_PASSWORD", "value": "${{ secrets.REGISTRY_PASSWORD }}", "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_URL", "value": "${{ secrets.REGISTRY_SERVER_URL }}", "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_USERNAME", "value": "${{ secrets.REGISTRY_USERNAME }}", "slotSetting": false }]'
+          app-settings-json: '[{ "name": "PYTHON_ENABLE_INIT_INDEXING", "value": 1, "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_PASSWORD", "value": "@Microsoft.KeyVault(SecretUri=https://pocaoaikv.vault.azure.net/secrets/DOCKERREGISTRYSERVERPASSWORD)", "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_URL", "value": "${{ secrets.REGISTRY_SERVER_URL }}", "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_USERNAME", "value": "@Microsoft.KeyVault(SecretUri=https://pocaoaikv.vault.azure.net/secrets/DOCKERREGISTRYSERVERUSERNAME)", "slotSetting": false }]'
 
       - name: 'Run Azure Functions Container Action'
         uses: Azure/functions-container-action@v1
