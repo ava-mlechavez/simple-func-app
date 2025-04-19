@@ -34,6 +34,13 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
+      - name: 'Docker Login'
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.AZURE_CLIENT_ID }}
+          password: ${{ secrets.AZURE_CLIENT_SECRET }}
+
       - name: Build Docker Image
         id: build-docker
         run: |
@@ -43,7 +50,7 @@ jobs:
 
       - name: Push Docker Image to ACR
         run: |
-          az acr login --name ${{ env.ACR_NAME }}
+          # az acr login --name ${{ env.ACR_NAME }}
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
       # - name: 'Run Azure Functions Container Action'
