@@ -11,7 +11,6 @@ permissions:
   id-token: write
 
 env:
-  ACR_NAME: avamlechavez
   ACR_REPOSITORY_NAME: simple_func_app
 
 jobs:
@@ -27,6 +26,8 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
+      # This is used to deploy to Azure resources using OIDC
+      # Also used for pushing the image to ACR (has AcrPush role)
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -34,23 +35,19 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      # - name: Login to Azure Container Registry
-      #   uses: azure/docker-login@v1
-      #   with:
-      #     login-server: ${{ env.ACR_NAME }}.azurecr.io
-      #     username: ${{ secrets.REGISTRY_USERNAME }}
-      #     password: ${{ secrets.REGISTRY_PASSWORD }}
-      #
       - name: Build Docker Image
         id: build-docker
         run: |
-          docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }} .
+          docker build -t ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }} .
 
       - name: Push Docker Image to ACR
         run: |
-          az acr login --name ${{ env.ACR_NAME }}
-          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
+          # make sure the service principal above has AcrPush role
+          az acr login --name ${{ secrets.REGISTRY_USERNAME }}
+          docker push ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
 
+      # This is used by the Azure/functions-container-action
+      # for pulling the image
       - name: Set Environment Variables
         uses: azure/appservice-settings@v1
         with:
@@ -63,11 +60,4 @@ jobs:
         id: fa
         with:
           app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
-          image: ${{ env.ACR_NAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
-
-      # - name: Configure Azure Function to Use Container
-      #   run: |
-      #     az functionapp config container set \
-      #       --name ${{ vars.AZURE_FUNCTION_APP_NAME }} \
-      #       --resource-group ${{ vars.RESOURCE_GROUP }} \
-      #       --image ${{ env.ACR_NAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
+          image: ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
