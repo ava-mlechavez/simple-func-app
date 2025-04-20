@@ -35,25 +35,12 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build Docker Image
-        id: build-docker
+      - name: Build docker image and push ACR
         run: |
           docker build -t ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }} .
-
-      - name: Push Docker Image to ACR
-        run: |
           # make sure the service principal above has AcrPush role
           az acr login --name ${{ secrets.REGISTRY_USERNAME }}
           docker push ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
-
-      # This is used by the Azure/functions-container-action
-      # for pulling the image
-      # - name: Set Environment Variables
-      #   uses: azure/appservice-settings@v1
-      #   with:
-      #     app-name: ${{ vars.AZURE_FUNCTION_APP_NAME }}
-      #     mask-inputs: false
-      #     app-settings-json: '[{ "name": "PYTHON_ENABLE_INIT_INDEXING", "value": 1, "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_PASSWORD", "value": "@Microsoft.KeyVault(SecretUri=https://pocaoaikv.vault.azure.net/secrets/DOCKERREGISTRYSERVERPASSWORD)", "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_URL", "value": "${{ secrets.REGISTRY_SERVER_URL }}", "slotSetting": false }, { "name": "DOCKER_REGISTRY_SERVER_USERNAME", "value": "@Microsoft.KeyVault(SecretUri=https://pocaoaikv.vault.azure.net/secrets/DOCKERREGISTRYSERVERUSERNAME)", "slotSetting": false }]'
 
       - name: 'Run Azure Functions Container Action'
         uses: Azure/functions-container-action@v1
