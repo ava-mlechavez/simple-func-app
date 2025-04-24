@@ -30,3 +30,8 @@ docker run -v $(pwd)/local.settings.json:/home/site/wwwroot/local.settings.json 
 -e AzureWebJobsSecretStorageType=files \
 -p 8080:80 avamlechavez.azurecr.io/simple_func_app:local
 ```
+
+- Run Azurite with oauth
+```bash
+docker run --rm -p 10000:10000 -p 10001:10001 -p 10002:10002 -v ~/azurite:/data mcr.microsoft.com/azure-storage/azurite azurite -l /data  --oauth basic --cert /data/cert.pem --key /data/cert-key.pem
+```
