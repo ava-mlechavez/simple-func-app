@@ -26,6 +26,16 @@ services:
       - IDENTITY_ENDPOINT=http://azcliproxy:8000/token
       - IMDS_ENDPOINT=http://azcliproxy:8000
 
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite
+    hostname: azurite
+    restart: always
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+
 volumes:
   secrets:
   azure_cache:  # Persistent volume for Azure CLI authentication
