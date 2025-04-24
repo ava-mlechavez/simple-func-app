@@ -1,0 +1,31 @@
+services:
+  azcliproxy:
+    image: avamlechavez.azurecr.io/azcliproxy:v1.0.0
+    ports:
+      - 8000:8000
+    volumes:
+      - azure_cache:/app/.azure  # Use a managed Docker volume instead of mounting local ~/.azure
+    environment:
+      - AZURE_CONFIG_DIR=/app/.azure
+
+  function-app:
+    build: .
+    depends_on:
+      - azcliproxy
+    image: avamlechavez.azurecr.io/simple_func_app:local
+    ports:
+      - "8081:80"
+    volumes:
+      - secrets:/azure-functions-host/Secrets
+    environment:
+      # - AZURE_CLIENT_ID=fd0f0663-fb18-4b29-b840-6d45acc26f56
+      - WEBSITES_INCLUDE_CLOUD_CERTS=true
+      - AzureWebJobsSecretStorageType=files
+      - AZURE_OPENAI_ENDPOINT=https://poc-aoai-eastus.openai.azure.com
+      - OPENAI_API_VERSION=2025-01-01-preview
+      - IDENTITY_ENDPOINT=http://azcliproxy:8000/token
+      - IMDS_ENDPOINT=http://azcliproxy:8000
+
+volumes:
+  secrets:
+  azure_cache:  # Persistent volume for Azure CLI authentication
