@@ -35,6 +35,9 @@ services:
       - "10000:10000"
       - "10001:10001"
       - "10002:10002"
+    volumes:
+      - ~/azurite:/data
+    command: azurite -l /data --oauth basic --cert /data/cert.pem --key /data/cert-key.pem
 
 volumes:
   secrets:
