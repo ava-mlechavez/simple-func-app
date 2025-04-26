@@ -1,6 +1,7 @@
 services:
   azcliproxy:
     image: avamlechavez.azurecr.io/azcliproxy:v1.0.0
+    container_name: azcliproxy
     ports:
       - 8000:8000
     volumes:
@@ -13,6 +14,7 @@ services:
     depends_on:
       - azcliproxy
     image: avamlechavez.azurecr.io/simple_func_app:local
+    container_name: simple_func_app
     ports:
       - "8081:80"
     volumes:
