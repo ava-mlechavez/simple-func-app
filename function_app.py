@@ -26,7 +26,15 @@ def get_azure_credential() -> ManagedIdentityCredential | DefaultAzureCredential
     if client_id:
         return ManagedIdentityCredential(client_id=client_id)
 
-    return DefaultAzureCredential()
+    return DefaultAzureCredential(
+        exclude_workload_identity_credential=True,
+        exclude_environment_credential=True,
+        exclude_shared_token_cache_credential=True,
+        exclude_visual_studio_code_credential=True,
+        exclude_developer_clie_credential=True,
+        exclude_nteractive_browser_credential=True,
+        exclude_powershell_credential=True,
+    )
 
 
 chat_history = ChatHistory(system_message="You are a helpful AI Agent")
