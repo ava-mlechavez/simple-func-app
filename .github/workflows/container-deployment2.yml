@@ -32,6 +32,7 @@ env:
   ACR_REPOSITORY_NAME: ${{ github.event.inputs.acr_repository_name }}
   REGISTRY_USERNAME: ${{ github.event.inputs.registry_username }}
   AZURE_FUNCTION_APP_NAME2: ${{ github.event.inputs.function_app_name }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -66,6 +67,11 @@ jobs:
           # make sure the service principal above has AcrPush role
           az acr login --name ${{ env.REGISTRY_USERNAME }}
           docker push ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
+
+      - name: Echo steps for debugging
+        shell: bash
+        run: |
+          echo "AZURE_FUNCTION_APP_NAME2 is set to: ${{ env.AZURE_FUNCTION_APP_NAME2 }}"
 
       - name: 'Run Azure Functions Container Action'
         uses: Azure/functions-container-action@v1
