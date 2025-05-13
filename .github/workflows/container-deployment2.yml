@@ -5,17 +5,33 @@ on:
   #   branches:
   #     - main
   workflow_dispatch:
+    inputs:
+      python_version:
+        description: "Python version of your function app"
+        required: true
+        default: "3.12"
+      acr_repository_name:
+        description: "Azure Container Repository name"
+        required: true
+        default: "simple_func_app"
+      registry_username:
+        description: "Azure Container Registry name"
+        required: true
+        default: "ragdemodevacr"
+      function_app_name:
+        description: "Function App Name"
+        required: true
+        default: "rag-demo-dev-func"
 
 permissions:
   contents: read
   id-token: write
 
 env:
-  PYTHON_VERSION: "3.12"
-  ACR_REPOSITORY_NAME: simple_func_app
-  REGISTRY_USERNAME: ragdemodevacr
-  AZURE_FUNCTION_APP_NAME2: rag-demo-dev-func
-
+  PYTHON_VERSION: ${{ github.event.inputs.python_version }}
+  ACR_REPOSITORY_NAME: ${{ github.event.inputs.acr_repository_name }}
+  REGISTRY_USERNAME: ${{ github.event.inputs.registry_username }}
+  AZURE_FUNCTION_APP_NAME2: ${{ github.event.inputs.function_app_name }}
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
