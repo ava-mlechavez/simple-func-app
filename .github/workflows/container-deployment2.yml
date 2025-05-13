@@ -1,0 +1,59 @@
+name: Deploy Containerized Function
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  PYTHON_VERSION: "3.12"
+  ACR_REPOSITORY_NAME: simple_func_app
+  REGISTRY_USERNAME: ragdemodevacr
+  AZURE_FUNCTION_APP_NAME: rag-demo-dev-func
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # pip install pytest pytest-asyncio
+
+      # This is used to deploy to Azure resources using OIDC
+      # Also used for pushing the image to ACR (has AcrPush role)
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build docker image and push ACR
+        run: |
+          docker build -t ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }} .
+          # make sure the service principal above has AcrPush role
+          az acr login --name ${{ secrets.REGISTRY_USERNAME }}
+          docker push ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
+
+      - name: 'Run Azure Functions Container Action'
+        uses: Azure/functions-container-action@v1
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTION_APP_NAME }}
+          image: ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
