@@ -14,7 +14,7 @@ env:
   PYTHON_VERSION: "3.12"
   ACR_REPOSITORY_NAME: simple_func_app
   REGISTRY_USERNAME: ragdemodevacr
-  AZURE_FUNCTION_APP_NAME: rag-demo-dev-func
+  AZURE_FUNCTION_APP_NAME2: rag-demo-dev-func
 
 jobs:
   build-and-deploy:
@@ -55,5 +55,5 @@ jobs:
         uses: Azure/functions-container-action@v1
         id: fa
         with:
-          app-name: ${{ env.AZURE_FUNCTION_APP_NAME }}
+          app-name: ${{ env.AZURE_FUNCTION_APP_NAME2 }}
           image: ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
