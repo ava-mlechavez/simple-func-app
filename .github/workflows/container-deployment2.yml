@@ -1,4 +1,4 @@
-name: Deploy Containerized Function
+name: Deploy Containerized Function 2
 
 on:
   # push:
