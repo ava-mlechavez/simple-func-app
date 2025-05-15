@@ -28,7 +28,7 @@ env:
   PYTHON_VERSION: ${{ github.event.inputs.python_version }}
   ACR_REPOSITORY_NAME: ${{ github.event.inputs.acr_repository_name }}
   REGISTRY_USERNAME: ${{ github.event.inputs.registry_username }}
-  # AZURE_FUNCTION_APP_NAME2: ${{ github.event.inputs.function_app_name }}
+  AZURE_FUNCTION_APP_NAME: ${{ github.event.inputs.function_app_name }}
 
 jobs:
   build-and-deploy:
@@ -68,7 +68,7 @@ jobs:
       - name: Echo steps for debugging
         shell: bash
         run: |
-          echo "AZURE_FUNCTION_APP_NAME2 is set to: ${{ env.AZURE_FUNCTION_APP_NAME2 }}"
+          echo "AZURE_FUNCTION_APP_NAME is set to: ${{ env.AZURE_FUNCTION_APP_NAME }}"
 
       # make sure that managed identity has acrpull access
         # else this will give a confusing error:
@@ -77,6 +77,6 @@ jobs:
         uses: Azure/functions-container-action@v1
         id: fa
         with:
-          # app-name: ${{ env.AZURE_FUNCTION_APP_NAME2 }}
-          app-name: ${{ github.event.inputs.function_app_name }}
+          app-name: ${{ env.AZURE_FUNCTION_APP_NAME }}
+          # app-name: ${{ github.event.inputs.function_app_name }}
           image: ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
