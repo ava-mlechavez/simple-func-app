@@ -14,11 +14,11 @@ on:
       registry_username:
         description: "Azure Container Registry name"
         required: true
-        default: "ragdemodevacr"
+        default: ""
       function_app_name:
         description: "Function App Name"
         required: true
-        default: "rag-demo-dev-func"
+        default: ""
 
 permissions:
   contents: read
