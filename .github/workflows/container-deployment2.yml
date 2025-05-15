@@ -1,9 +1,6 @@
 name: Deploy Containerized Function 2
 
 on:
-  # push:
-  #   branches:
-  #     - main
   workflow_dispatch:
     inputs:
       python_version:
@@ -31,7 +28,7 @@ env:
   PYTHON_VERSION: ${{ github.event.inputs.python_version }}
   ACR_REPOSITORY_NAME: ${{ github.event.inputs.acr_repository_name }}
   REGISTRY_USERNAME: ${{ github.event.inputs.registry_username }}
-  AZURE_FUNCTION_APP_NAME2: ${{ github.event.inputs.function_app_name }}
+  # AZURE_FUNCTION_APP_NAME2: ${{ github.event.inputs.function_app_name }}
 
 jobs:
   build-and-deploy:
@@ -61,7 +58,7 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build docker image and push ACR
+      - name: Build docker image and push to ACR
         run: |
           docker build -t ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }} .
           # make sure the service principal above has AcrPush role
@@ -73,9 +70,13 @@ jobs:
         run: |
           echo "AZURE_FUNCTION_APP_NAME2 is set to: ${{ env.AZURE_FUNCTION_APP_NAME2 }}"
 
-      - name: 'Run Azure Functions Container Action'
+      # make sure that managed identity has acrpull access
+        # else this will give a confusing error:
+        # e.g. Error: Error: Resource rag-demo-dev-func doesn't exist.
+      - name: 'Deploy Azure Functions Container'
         uses: Azure/functions-container-action@v1
         id: fa
         with:
-          app-name: ${{ env.AZURE_FUNCTION_APP_NAME2 }}
+          # app-name: ${{ env.AZURE_FUNCTION_APP_NAME2 }}
+          app-name: ${{ github.event.inputs.function_app_name }}
           image: ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
