@@ -78,5 +78,5 @@ jobs:
         id: fa
         with:
           app-name: ${{ env.AZURE_FUNCTION_APP_NAME }}
-          # app-name: ${{ github.event.inputs.function_app_name }}
           image: ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
+          respect-funcignore: true
