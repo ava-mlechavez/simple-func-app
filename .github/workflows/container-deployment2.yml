@@ -79,4 +79,3 @@ jobs:
         with:
           app-name: ${{ env.AZURE_FUNCTION_APP_NAME }}
           image: ${{ env.REGISTRY_USERNAME }}.azurecr.io/${{ env.ACR_REPOSITORY_NAME }}:${{ github.sha }}
-          respect-funcignore: true
